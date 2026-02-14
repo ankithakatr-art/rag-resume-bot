@@ -18,6 +18,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -46,9 +47,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -59,10 +62,82 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
+}
+
+.parent-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container1 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+input[type="text"] {
+
+  padding: 12px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  /* Prevents auto-zoom on mobile Safari */
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: lightslategrey;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 200;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+input[type="text"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+  outline: none;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 200;
+}
+
+
+.enter-button {
+  padding: 12px;
+  height: 100%;
+  margin: 0;
+  background-color: rgb(164, 146, 146);
+  border-radius: 4px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border: 2px solid #ccc;
+}
+
+.enter-button:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+.response-container {
+  border-style: dotted;
+  border-color: black;
+  border-radius: 3px;
+  padding: 10px;
+  background-color: #4d4f7a;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 200;
+  margin-top: 50px;
+}
+
+
+.icon-spin {
+  margin-top: 30px;
+  animation: spin 1s linear infinite;
+  font-size: large;
 }

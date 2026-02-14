@@ -17,15 +17,15 @@ const resumeText = fs.readFileSync('resume.txt', 'utf-8');
 function splitToChunks(text) {
     // Split by double newlines (paragraph breaks)
     const paragraphs = text.split('\n\n').filter(p => p.trim().length > 50);
-    
+
     const chunks = [];
-    
+
     for (const para of paragraphs) {
         // If paragraph is too long, split further
         if (para.length > 1000) {
             const sentences = para.split(/[.!?]\s+/);
             let currentChunk = '';
-            
+
             for (const sentence of sentences) {
                 if ((currentChunk + sentence).length < 800) {
                     currentChunk += sentence + '. ';
@@ -39,7 +39,7 @@ function splitToChunks(text) {
             chunks.push(para.trim());
         }
     }
-    
+
     return chunks;
 }
 
@@ -86,60 +86,58 @@ async function convertToVectorEmbeddings() {
 //query the db
 // Query the resume
 async function query(question) {
+
     console.log(`\n🔍 Searching for: "${question}"\n`);
-    
+
     const index = pc.index('resume-index');
-    
-    // Step 1: Convert question to embedding
-    const questionEmbedding = await openai.embeddings.create({
-        model: "text-embedding-3-small",
-        input: question,
-    });
-    
-    // Step 2: Search Pinecone for similar chunks
-    const searchResults = await index.query({
-        vector: questionEmbedding.data[0].embedding,
-        topK: 10,
-        includeMetadata: true
-    });
-    
-    console.log(`Found ${searchResults.matches.length} relevant chunks\n`);
-    
-    // DEBUG: Show which chunks were retrieved
-    console.log('=== RETRIEVED CHUNKS ===');
-    searchResults.matches.forEach((match, i) => {
-        console.log(`\nChunk ${i + 1} (score: ${match.score}):`);
-        console.log(match.metadata.text.substring(0, 200) + '...');
-    });
-    console.log('\n========================\n');
-    
-    // Step 3: Extract text from results
-    const context = searchResults.matches
-        .map(match => match.metadata.text)
-        .join('\n\n');
-    
-    // Step 4: Ask GPT with context
-    const completion = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-            {
-                role: "system",
-                content: "You are a helpful assistant that answers questions about Ankitha's resume. When asked about 'current' or 'latest' company, look for the most recent dates (2024-Present or Oct 2024-Present). Answer based ONLY on the provided context."
-            },
-            {
-                role: "user",
-                content: `Context:\n${context}\n\nQuestion: ${question}`
-            }
-        ],
-    });
-    
-    return completion.choices[0].message.content;
+
+    try {
+        // Step 1: Convert question to embedding
+        const questionEmbedding = await openai.embeddings.create({
+            model: "text-embedding-3-small",
+            input: question,
+        });
+
+        // Step 2: Search Pinecone for similar chunks
+        const searchResults = await index.query({
+            vector: questionEmbedding.data[0].embedding,
+            topK: 10,
+            includeMetadata: true
+        });
+
+        console.log(`Found ${searchResults.matches.length} relevant chunks\n`);
+
+
+        // Step 3: Extract text from results
+        const context = searchResults.matches
+            .map(match => match.metadata.text)
+            .join('\n\n');
+
+        // Step 4: Ask GPT with context
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: "system",
+                    content: "You are a helpful assistant that answers questions about Ankitha's resume. When asked about 'current' or 'latest' company, look for the most recent dates (2024-Present or Oct 2024-Present). Answer based ONLY on the provided context."
+                },
+                {
+                    role: "user",
+                    content: `Context:\n${context}\n\nQuestion: ${question}`
+                }
+            ],
+        });
+
+        return completion.choices[0].message.content;
+    } catch (error) {
+        return response.status(500).json({ error: err.message });
+    }
 }
 
 async function main() {
     const args = process.argv.slice(2);
     const command = args[0];
-    
+
     if (command === 'reset') {
         await deleteAndRecreateIndex();
     } else if (command === 'index') {
@@ -162,4 +160,11 @@ async function main() {
     }
 }
 
-main().catch(e => console.error(e));
+if (require.main === module) {
+    main().catch(e => console.error(e));
+}
+
+
+module.exports = {
+    query: query
+}
