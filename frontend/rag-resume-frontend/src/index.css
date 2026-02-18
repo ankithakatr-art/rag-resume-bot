@@ -124,6 +124,7 @@ input[type="text"]:focus {
   color: #666666;
   cursor: not-allowed;
 }
+
 .response-container {
   border-style: dotted;
   border-color: black;
@@ -140,4 +141,16 @@ input[type="text"]:focus {
   margin-top: 30px;
   animation: spin 1s linear infinite;
   font-size: large;
+}
+
+
+.question-container {
+  border-style: dotted;
+  border-color: black;
+  border-radius: 3px;
+  padding: 10px;
+  background-color: #4f1551;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 200;
+  margin-top: 50px;
 }

@@ -10,7 +10,6 @@ export default function ParentContainer() {
             repeat={50}
             deletionSpeed={80}
         />
-        {/* <h1 className="heading-container"> Hello, welcome to learning more about Ankitha! </h1> */}
         <TextContainer />
     </div>);
 }

@@ -1,20 +1,31 @@
 import { faArrowRightLong, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 
 export default function TextContainer() {
     const [text, setText] = useState('');
-    const [response, setResponse] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [messages, setMessages] = useState<{
+        origin: string; text: string, id: string
+    }[]>([]);
+    const messagesRef = useRef<HTMLDivElement>(null);
 
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setText(e.target.value);
     };
 
+
+    const generateUUID = () => {
+        return crypto.randomUUID();
+    }
+
     const handleTextSubmit = () => {
 
         setIsLoading(true)
+        setText('');
+
+        setMessages(prev => [...prev, { origin: 'user', text: text, id: generateUUID() }]);
 
         fetch('http://localhost:3003/resume/question', {
             method: 'POST',
@@ -24,28 +35,52 @@ export default function TextContainer() {
             },
         }).then(response => response.json())
             .then(res => {
-                console.log('frontend:', res.answer);
-                setResponse(res.answer);
+                setMessages(prev => [...prev, { origin: 'bot', text: res.answer, id: generateUUID() }]);
             })
             .catch(err => console.error('Error submitting text:', err))
             .finally(() => setIsLoading(false));
 
     };
 
+    const handleEnterKey = (event: any) => {
+
+        if (event.key === 'Enter') {
+            handleTextSubmit();
+        }
+    };
+
+    const scrollToBottom = () => {
+        if(messagesRef.current){
+            messagesRef.current.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+
     return (
         <div className='parent-container'>
             <div className='container1'>
-                <input className='text-container' type="text" onChange={handleTextChange} value={text} />
+                <input className='text-container' type="text" onChange={handleTextChange} value={text} onKeyDown={handleEnterKey} />
 
                 <button className="enter-button" disabled={isLoading || text.length < 3} onClick={handleTextSubmit}>
                     <FontAwesomeIcon icon={faArrowRightLong} />
                 </button>
 
             </div>
-            <div className=''>
+            <div className='messages-container'>
                 {isLoading && <FontAwesomeIcon className='icon-spin fa-2x' icon={faSpinner} />}
-                {response && <p className='response-container'>{response}</p>}
+                {messages.map(x => {
+                    return (
+                        <div key={x.id}>
+                            <p className={x?.origin === 'user' ? 'question-container' : 'response-container'}>{x.text}</p>
+                        </div>
+                    );
+                })}
             </div>
+            <div ref={messagesRef}/>
         </div>
     );
 }
