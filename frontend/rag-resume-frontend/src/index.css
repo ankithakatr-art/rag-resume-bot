@@ -154,3 +154,15 @@ input[type="text"]:focus {
   font-weight: 200;
   margin-top: 50px;
 }
+
+.error-message{
+ border-style: dotted;
+  border-color: black;
+  border-radius: 3px;
+  padding: 10px;
+  background-color: rgb(138, 12, 12);
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 200;
+  margin-top: 50px;
+  color: white;
+}

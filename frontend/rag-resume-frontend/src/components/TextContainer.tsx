@@ -37,7 +37,13 @@ export default function TextContainer() {
             .then(res => {
                 setMessages(prev => [...prev, { origin: 'bot', text: res.answer, id: generateUUID() }]);
             })
-            .catch(err => console.error('Error submitting text:', err))
+            .catch(() => {
+                setMessages(prev => [...prev, {
+                    origin: 'error',
+                    text: 'Failed to get response. Please try again.',
+                    id: generateUUID()
+                }]);
+            })
             .finally(() => setIsLoading(false));
 
     };
@@ -50,8 +56,8 @@ export default function TextContainer() {
     };
 
     const scrollToBottom = () => {
-        if(messagesRef.current){
-            messagesRef.current.scrollIntoView({behavior: 'smooth', block: 'start'});
+        if (messagesRef.current) {
+            messagesRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
 
@@ -75,12 +81,12 @@ export default function TextContainer() {
                 {messages.map(x => {
                     return (
                         <div key={x.id}>
-                            <p className={x?.origin === 'user' ? 'question-container' : 'response-container'}>{x.text}</p>
+                            <p className={x?.origin === 'user' ? 'question-container' : x?.origin === 'error' ? 'error-message' : 'response-container'}>{x.text}</p>
                         </div>
                     );
                 })}
             </div>
-            <div ref={messagesRef}/>
+            <div ref={messagesRef} />
         </div>
     );
 }
