@@ -27,7 +27,7 @@ export default function TextContainer() {
 
         setMessages(prev => [...prev, { origin: 'user', text: text, id: generateUUID() }]);
 
-        fetch('http://localhost:3003/resume/question', {
+        fetch('/resume/question', {
             method: 'POST',
             body: JSON.stringify({ "question": text }),
             headers: {
