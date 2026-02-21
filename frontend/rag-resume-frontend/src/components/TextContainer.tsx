@@ -69,7 +69,7 @@ export default function TextContainer() {
     return (
         <div className='parent-container'>
             <div className='container1'>
-                <input className='text-container' type="text" onChange={handleTextChange} value={text} onKeyDown={handleEnterKey} />
+                <input type="text" onChange={handleTextChange} value={text} onKeyDown={handleEnterKey} />
 
                 <button className="enter-button" disabled={isLoading || text.length < 3} onClick={handleTextSubmit}>
                     <FontAwesomeIcon icon={faArrowRightLong} />

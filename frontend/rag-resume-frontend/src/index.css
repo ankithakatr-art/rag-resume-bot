@@ -97,6 +97,7 @@ input[type="text"] {
   font-weight: 200;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
+  min-width: 400px;
 }
 
 input[type="text"]:focus {
