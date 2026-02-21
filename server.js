@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require("express");
 const cors = require('cors');
 const { query } = require('./resumeRAG');
-import path from "path";
+const path = require('node:path');
 
 const app = express();
 
