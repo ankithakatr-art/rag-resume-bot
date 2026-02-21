@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "pnpm run build --prefix client",
     "dev": "nodemon server",
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require("express");
 const cors = require('cors');
 const { query } = require('./resumeRAG');
+import path from "path";
 
 const app = express();
 
@@ -47,4 +48,11 @@ app.post("/resume/question", async (request, response) => {
 
 app.listen(process.env.PORT || 5004, () => {
   console.log("Server running on", process.env.PORT);
+});
+
+
+//serve frontend
+app.use(express.static(path.join(__dirname, 'client/dist')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/dist/index.html'));
 });
